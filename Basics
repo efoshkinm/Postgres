@@ -1,0 +1,87 @@
+Создание базы данных
+CREATE DATABASE mydb;
+
+Подключиться к созданной базе данных
+\c mydb
+
+Справочная информация 
+\?
+
+Создание таблицы
+CREATE TABLE courses(
+  c_no text PRIMARY KEY,
+  title text,
+  hours integer
+ );
+ 
+ Справочная информация по команде SQL
+ \help CREATE TABLE
+ 
+ Наполнение таблицы
+ INSERT INTO courses(c_no, title, hours)
+ VALUES ('CS301', 'Базы данных', 30),
+        ('CS305', 'Сети ЭВМ', 60);
+        
+Создание и наполнение таблицы студентов
+ CREATE TABLE students(
+  s_id integer PRIMARY KEY,
+  name text,
+  stat_year integer
+ );
+ 
+ INSERT INTO students(s_id, name, start_year)
+ VALUES (1451, 'Анна', 2014),
+        (1432, 'Виктор', 2014),
+        (1556, 'Нина', 2015);
+        
+        
+Создание и наполнение таблицы экзаменов
+CREATE TABLE exams(
+  s_id integer REFERENCES students(s_id),
+  c_no text REFERENCES courses(c_no),
+  score integer,
+  CONSTRAINT pk PRIMARY KEY(s_id, c_no)
+);
+
+# CONSTRAINT это ограничение PRIMARY KEY сразу на несколько столбцов.
+
+INSERT INTO exams(s_id, c_no, score)
+VALUES (1451, 'CS301', 5),
+       (1556, 'CS301', 5),
+       (1451, 'CS305', 5),
+       (1432, 'CS305', 4);
+
+
+Выборка данных
+SELECT title AS course_title, hours FROM courses;
+
+SELECT * FROM courses;
+
+SELECT start_year FROM studentd;
+
+Чтобы выбрать все различные годы поступления нужно добавить DISTICT
+SELECT DISTINCT start_year FROM students;
+
+SELECT 2+2 AS result;
+
+SELECT * FROM courses WHERE hours > 45;
+
+Соединения
+SELECT * FROM courses, exams;
+
+SELECT courses.title, exams.s_id, exams.score FROM courses, exams WHERE courses.c_no = exams.c_no;
+
+JOIN запросы
+SELECT students.name, exams.score
+FROM students
+JOIN exams ON students.s_id = exams.s_id AND exams.c_no = 'CS305';
+
+LEFT JOIN
+SELECT students.name, exams.score FROM students LEFT JOIN exams ON students.s_id = exams.s_id
+AND exams.c_no = 'CS305';
+
+SELECT students.name, exams.score FROM students LEFT JOIN exams ON students.s_id = exams.s_id
+WHERE exams.c_no = 'CS305';
+
+
+ 
